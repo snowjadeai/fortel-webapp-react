@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import './App.css';
 
@@ -25,14 +26,22 @@ function App() {
             (fortune === "") &&
             <button
               onClick={async () => {
-                setFortune("To do: call API here")
+                const response = await fetch("https://vigilant-engine-4jqj9q947jj6fjwqg-3000.app.github.dev")
+              
+                let partialResponse = ""
+                for await (const chunk of response.body.values()) {
+                  partialResponse += new TextDecoder().decode(chunk)
+                  setFortune(partialResponse)
+                }
               }}
               disabled={birthDate === ""}
             >
               Show 2025 Fortune
             </button>
           }
-          {fortune}
+          <ReactMarkdown>
+            {fortune}
+          </ReactMarkdown>
         </p>
       </header>
     </div>
